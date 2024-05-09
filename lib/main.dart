@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'Screens/loginscreen.dart';
 import 'Screens/homecreen.dart';
+import 'Screens/available_events_screen.dart';
+import 'Screens/registerscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,13 +13,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Event Management System',
-      initialRoute: '/',
       routes: {
-        '/': (context) => const LoginScreen(),
-        '/home': (context) => const HomeScreen(),
+        '/': (context) => HomeScreen(),
+        '/availableevents': (context) =>
+            EventListWidget(url: 'https://rapidapi.com'),
+        '/register': (context) => RegisterScreen(),
+        '/login': (context) => LoginScreen(),
+
         // '/third': (context) => ThirdScreen(),
       },
+      initialRoute: '/',
     );
   }
 }
