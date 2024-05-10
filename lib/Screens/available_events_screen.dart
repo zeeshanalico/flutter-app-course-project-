@@ -76,12 +76,9 @@ class _EventListWidgetState extends State<EventListWidget> {
           : ListView.builder(
               itemCount: _events.length,
               itemBuilder: (context, index) {
-                final eventName = _events[index][
-                    'name']; // Assuming 'name' is the key for event name in JSON
-                final eventDate = _events[index][
-                    'date']; // Assuming 'name' is the key for event name in JSON
-                final eventLocation = _events[index][
-                    'location']; // Assuming 'name' is the key for event name in JSON
+                final eventName = _events[index]['name'];
+                final eventDate = _events[index]['date'];
+                final eventLocation = _events[index]['location'];
 
                 return ListTile(
                   title: Text(eventName),

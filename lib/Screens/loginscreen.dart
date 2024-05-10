@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -8,13 +9,25 @@ class LoginScreen extends StatefulWidget {
 class _LoginPageState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
-  void _login() {
+  void _login() async {
     String email = emailController.text;
     String password = passwordController.text;
+    print(email);
 
-    print('Email: $email');
-    print('Password: $password');
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Authentication successful, user is now signed in
+      print('User ID: ${userCredential.user?.uid}');
+    } catch (error) {
+      // Handle authentication errors
+      print('Error: $error');
+      // You can show a snackbar or display an error message to the user
+    }
   }
 
   @override

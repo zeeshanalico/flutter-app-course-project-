@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import './../utils/sqlite_helper.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
   _RegisterUserState createState() => _RegisterUserState();
@@ -14,12 +15,37 @@ class _RegisterUserState extends State<RegisterScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  RegisterHelper sqliteHelper = RegisterHelper();
+
+  @override
+  void initState() {
+    super.initState();
+    sqliteHelper.init().then((value) {}).catchError((e) {
+      print(e); //bug
+    });
+  }
+
   void register() {
     String name = nameController.text;
     String email = emailController.text;
     String phone = phoneController.text;
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
+    if (password == confirmPassword) {
+      User user = User(
+        name: name,
+        email: email,
+        phone: phone,
+        password: password,
+      );
+      sqliteHelper.register(user).then((dynamic success) {
+        print('success info' + success);
+      }).catchError((e) {
+        print("catch error" + e);
+      });
+    } else {
+      print('PASSWORD DOES not match ');
+    }
   }
 
   @override
