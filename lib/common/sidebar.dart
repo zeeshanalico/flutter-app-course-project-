@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 
 class SideBar extends StatelessWidget {
@@ -8,6 +10,8 @@ class SideBar extends StatelessWidget {
     {'icon': Icons.logout, 'title': 'Logout', 'route': '/logout'},
     {'icon': Icons.star_rate_outlined, 'title': 'Weather', 'route': '/weather'},
   ];
+
+  SideBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +52,7 @@ class SidebarTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
+  // ignore: use_key_in_widget_constructors
   SidebarTile(
       {required this.icon,
       required this.title,
@@ -62,6 +67,7 @@ class SidebarTile extends StatelessWidget {
         child: Row(
           children: [
             Icon(icon),
+            // ignore: prefer_const_constructors
             SizedBox(width: 10),
             Text(title),
           ],

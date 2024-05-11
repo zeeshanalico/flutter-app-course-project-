@@ -1,15 +1,49 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadEvents(context);
+  }
+
+  Future<void> _loadEvents(BuildContext context) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    List<Map<String, dynamic>> events = [
+      {
+        'id': '1',
+        'title': 'Event 1',
+        'description': 'Description for Event 1',
+        'date': '2022-05-15',
+      },
+      {
+        'id': '2',
+        'title': 'Event 2',
+        'description': 'Description for Event 2',
+        'date': '2022-05-20',
+      },
+    ];
+
+    List<String> eventsJson = events
+        .map((event) => json.encode(event, toEncodable: (e) => e.toString()))
+        .toList();
+
+    await pref.setStringList('events', eventsJson);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          // title: Text('Beautiful Home Screen'),
-          ),
-      // drawer: SideBar(),
       body: Container(
         padding: const EdgeInsets.all(20.0),
         child: Column(

@@ -1,91 +1,167 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
-class EventListWidget extends StatefulWidget {
-  final String url; // URL of the JSON data source
-
-  const EventListWidget({super.key, required this.url});
+class AvailableEvents extends StatefulWidget {
+  const AvailableEvents({Key? key}) : super(key: key);
 
   @override
-  State<EventListWidget> createState() => _EventListWidgetState();
+  State<AvailableEvents> createState() => _EventDetailsState();
 }
 
-class _EventListWidgetState extends State<EventListWidget> {
-  List<dynamic> _events = []; // List to store fetched event data
+class _EventDetailsState extends State<AvailableEvents> {
+  List<Map<String, dynamic>> events = [];
+  String _searchText = "";
+  DateTime? _selectedDate;
+  String? _selectedLocation;
+  late SharedPreferences pref;
 
   @override
   void initState() {
     super.initState();
-    _fetchData();
+    _loadEvents();
   }
 
-//   Future<void> _fetchData() async {
-//     try {
-//       final response = await http.get(Uri.parse(widget.url));
-//       if (response.statusCode == 200) {
-//       final data = jsonDecode(response.body);
-
-//         setState(() {
-//           _events = data; // Update state with fetched data
-//         });
-//       } else {
-//         // Handle error scenario (e.g., display an error message)
-//         print('Error fetching data: ${response.statusCode}');
-//       }
-//     } catch (error) {
-//       // Handle exceptions (e.g., network issues)
-//       print('Error fetching data: $error');
-//     }
-//   }
-
-  Future<void> _fetchData() async {
-    try {
-      // Simulating API response by using hardcoded data
-      final data = [
-        {
-          "name": "Tech Conference 2024",
-          "date": "2024-05-20",
-          "location": "New York City"
-        },
-        {
-          "name": "Music Festival",
-          "date": "2024-06-15",
-          "location": "Los Angeles"
-        },
-      ];
-
-      setState(() {
-        _events = data; // Update state with hardcoded data
-      });
-    } catch (error) {
-      // Handle exceptions (if any)
-      print('Error fetching data: $error');
+  Future<void> _loadEvents() async {
+    pref = await SharedPreferences.getInstance();
+    var eventsString = pref.getStringList('events');
+    if (eventsString != null) {
+      try {
+        // events =
+        //     json.decode(eventsString.join(', ')).cast<Map<String, dynamic>>();
+        events = [
+          {
+            'id': '1',
+            'title': 'Event 1',
+            'description': 'Description for Event 1',
+            'date': '2022-05-15',
+          },
+          {
+            'id': '2',
+            'title': 'Event 2',
+            'description': 'Description for Event 2',
+            'date': '2022-05-20',
+          },
+        ];
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      events = []; // Initialize with empty list if no events found
     }
+
+    print(events);
+    setState(() {});
+  }
+
+  void _filterEvents() {
+    setState(() {
+      events = events.where((event) => _matchesFilter(event)).toList();
+    });
+  }
+
+  bool _matchesFilter(Map<String, dynamic> event) {
+    bool matchesSearch = _searchText.isEmpty ||
+        event['title'].toLowerCase().contains(_searchText.toLowerCase());
+    bool matchesDate =
+        _selectedDate == null || event['date'] == _selectedDate.toString();
+    bool matchesLocation =
+        _selectedLocation == null || event['location'] == _selectedLocation;
+    return matchesSearch && matchesDate && matchesLocation;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Event List'),
+        title: const Text('Event Details'),
       ),
-      body: _events.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator()) // Show loading indicator
-          : ListView.builder(
-              itemCount: _events.length,
-              itemBuilder: (context, index) {
-                final eventName = _events[index]['name'];
-                final eventDate = _events[index]['date'];
-                final eventLocation = _events[index]['location'];
+      body: Column(
+        children: [
+          // Filter section
+          _buildFilterSection(),
+          // List of events
+          Expanded(child: _buildEventList()),
+        ],
+      ),
+    );
+  }
 
-                return ListTile(
-                  title: Text(eventName),
-                  subtitle: Text(eventDate + " | " + eventLocation),
-                );
-              },
+  Widget _buildFilterSection() {
+    return Row(
+      children: [
+        // Search bar
+        Expanded(
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: 'Search events',
             ),
+            onChanged: (text) => setState(() => _searchText = text),
+          ),
+        ),
+        // Date picker
+        IconButton(
+          icon: const Icon(Icons.calendar_today),
+          onPressed: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2023, 1, 1),
+              lastDate: DateTime(2025, 12, 31),
+            );
+            if (pickedDate != null) {
+              setState(() => _selectedDate = pickedDate);
+            }
+          },
+        ),
+        // Location dropdown (replace with your implementation)
+        DropdownButton<String>(
+          value: _selectedLocation,
+          items: const [
+            DropdownMenuItem(
+              value: 'All locations',
+              child: Text('All locations'),
+            ),
+            // Add more location options here
+          ],
+          onChanged: (value) => setState(() => _selectedLocation = value),
+        ),
+        // Filter button
+        IconButton(
+          icon: const Icon(Icons.filter_list),
+          onPressed: _filterEvents,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEventList() {
+    if (events.isEmpty) {
+      return const Center(child: Text('No events found'));
+    }
+    return ListView.builder(
+      itemCount: events.length,
+      itemBuilder: (context, index) {
+        return _EventListItem(event: events[index]);
+      },
+    );
+  }
+}
+
+class _EventListItem extends StatelessWidget {
+  final Map<String, dynamic> event;
+
+  const _EventListItem({Key? key, required this.event}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(event['title']),
+      subtitle: Text('Date: ${event['date']}'),
+      trailing: const Icon(Icons.arrow_right),
+      onTap: () {
+        // Navigate to event details screen (implement your navigation logic)
+      },
     );
   }
 }
