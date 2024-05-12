@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:event_management_system/common/drawer.dart';
 // import '../../common/sidebar.dart';
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }
@@ -42,14 +45,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: SideBar(),
+      drawer: MyDrawer(),
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: const Text('Dashboard'),
       ),
       body: SafeArea(
         child: userData != null
             ? _buildDashboardContent(userData!)
-            : Center(
+            : const Center(
                 child: Text('No user logged in'),
               ),
       ),
@@ -67,17 +70,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
               children: [
                 Text(
                   'Welcome, ${userData[0]}!', // Display username
-                  style: TextStyle(fontSize: 20.0),
+                  style: const TextStyle(fontSize: 20.0),
                 ),
                 SizedBox(height: 10),
                 Text(
                   'Email: ${userData[1]}', // Display email
-                  style: TextStyle(fontSize: 16.0),
+                  style: const TextStyle(fontSize: 16.0),
                 ),
                 SizedBox(height: 10),
                 Text(
                   'Phone: ${userData[3]}', // Display phone number
-                  style: TextStyle(fontSize: 16.0),
+                  style: const TextStyle(fontSize: 16.0),
                 ),
               ],
             ),
@@ -87,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
             onPressed: _logout,
-            child: Text('Logout'),
+            child: const Text('Logout'),
           ),
         ),
       ],

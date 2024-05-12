@@ -42,6 +42,24 @@ class _EventDetailsState extends State<AvailableEvents> {
             'description': 'Description for Event 2',
             'date': '2022-05-20',
           },
+          {
+            'id': '3',
+            'title': 'Event 3',
+            'description': 'Description for Event 3',
+            'date': '2022-05-20',
+          },
+          {
+            'id': '4',
+            'title': 'Event 4',
+            'description': 'Description for Event 4',
+            'date': '2022-05-20',
+          },
+          {
+            'id': '5',
+            'title': 'Event 5',
+            'description': 'Description for Event 5',
+            'date': '2022-05-20',
+          },
         ];
       } catch (e) {
         print(e);
@@ -50,7 +68,6 @@ class _EventDetailsState extends State<AvailableEvents> {
       events = []; // Initialize with empty list if no events found
     }
 
-    print(events);
     setState(() {});
   }
 
@@ -74,7 +91,26 @@ class _EventDetailsState extends State<AvailableEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Event Details'),
+        title: const Text(
+          'Available Events',
+        ),
+        automaticallyImplyLeading: false, // Hide the back button
+        actions: [
+          const SizedBox(width: 20.0),
+          IconButton(
+            icon: Icon(Icons.login),
+            onPressed: () {
+              Navigator.pushNamed(context, '/login');
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.person_add),
+            onPressed: () {
+              Navigator.pushNamed(context, '/register');
+            },
+          ),
+          const SizedBox(width: 40.0),
+        ],
       ),
       body: Column(
         children: [

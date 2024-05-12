@@ -102,6 +102,7 @@ class _RegisterUserState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

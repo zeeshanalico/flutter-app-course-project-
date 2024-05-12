@@ -36,10 +36,15 @@ class _LoginPageState extends State<LoginScreen> {
           content: Text('Signed in successfully!'),
         ),
       );
-      Navigator.pushReplacement(
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => DashboardScreen()),
+      // );
+      Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DashboardScreen()),
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
       );
+      // Navigator.pushNamed(context, '/dashboard');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

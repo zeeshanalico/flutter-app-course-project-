@@ -32,6 +32,24 @@ class _HomeScreenState extends State<HomeScreen> {
         'description': 'Description for Event 2',
         'date': '2022-05-20',
       },
+      {
+        'id': '3',
+        'title': 'Event 3',
+        'description': 'Description for Event 3',
+        'date': '2022-05-20',
+      },
+      {
+        'id': '4',
+        'title': 'Event 4',
+        'description': 'Description for Event 4',
+        'date': '2022-05-20',
+      },
+      {
+        'id': '5',
+        'title': 'Event 5',
+        'description': 'Description for Event 5',
+        'date': '2022-05-20',
+      },
     ];
 
     List<String> eventsJson = events
@@ -39,6 +57,10 @@ class _HomeScreenState extends State<HomeScreen> {
         .toList();
 
     await pref.setStringList('events', eventsJson);
+    await pref.setStringList(
+      'zeeshanali@gmail.com',
+      ['Zeeshan Ali', "zeeshanali@gmail.com", "admin", '03021055932'],
+    );
   }
 
   @override
@@ -75,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/availableEvents');
+                Navigator.pushNamed(context, '/availableevents');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
