@@ -31,26 +31,32 @@ class _LoginPageState extends State<LoginScreen> {
     // Replace this with your actual password hashing logic
     if (password == userData[2]) {
       pref.setStringList('loggedUser', userData);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Signed in successfully!'),
-        ),
-      );
+      if (mounted) {
+        // Check if the widget is still mounted
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Signed in successfully!'),
+          ),
+        );
+      }
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(builder: (context) => DashboardScreen()),
       // );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      );
-      // Navigator.pushNamed(context, '/dashboard');
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const DashboardScreen()),
+      // );
+      Navigator.pushNamed(context, '/dashboard');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter correct password!'),
-        ),
-      );
+      if (mounted) {
+        // Check if the widget is still mounted
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter correct password!'),
+          ),
+        );
+      }
       return;
     }
 

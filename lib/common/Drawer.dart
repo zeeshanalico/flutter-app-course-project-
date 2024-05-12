@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MenuItem {
   final IconData icon;
@@ -12,21 +13,55 @@ class MenuItem {
   });
 }
 
-class MyDrawer extends StatelessWidget {
-  MyDrawer({Key? key}) : super(key: key);
+class LogoutWidget extends StatelessWidget {
+  const LogoutWidget({Key? key}) : super(key: key);
 
+  Future<void> _logout(BuildContext context) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('loggedUser');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Logged out successfully!'),
+      ),
+    );
+    Navigator.pushNamed(
+        context, '/login'); // Navigate to login screen after logout
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.logout),
+      title: const Text(
+        'Logout',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () => _logout(context),
+    );
+  }
+}
+
+class MyDrawer extends StatefulWidget {
+  const MyDrawer({Key? key}) : super(key: key);
+
+  @override
+  _MyDrawerState createState() => _MyDrawerState();
+}
+
+class _MyDrawerState extends State<MyDrawer> {
   final List<MenuItem> items = [
     MenuItem(
         icon: Icons.dashboard, title: "Dashboard", routeName: "/dashboard"),
+    MenuItem(icon: Icons.person, title: "Profile", routeName: "/profile"),
     MenuItem(icon: Icons.event, title: "My Events", routeName: "/myevents"),
     MenuItem(
         icon: Icons.add_box, title: "Create Event", routeName: "/createevent"),
     MenuItem(
         icon: Icons.calendar_today, title: "Calendar", routeName: "/calendar"),
-    MenuItem(icon: Icons.person, title: "Profile", routeName: "/profile"),
     MenuItem(icon: Icons.settings, title: "Settings", routeName: "/setting"),
     MenuItem(icon: Icons.help, title: "Help & Support", routeName: "/help"),
-    MenuItem(icon: Icons.logout, title: "Logout", routeName: "/logout"),
+    MenuItem(
+        icon: Icons.logout, title: "Logout", routeName: "/availableevents"),
   ];
 
   @override
@@ -43,22 +78,25 @@ class MyDrawer extends StatelessWidget {
                   color: Colors.blueAccent,
                 ),
                 child: Text(
-                  'Manage Your Events',
+                  'EMS',
                   style: TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ),
             ),
             for (var item in items)
-              ListTile(
-                leading: Icon(item.icon),
-                title: Text(
-                  item.title,
-                  style: const TextStyle(color: Colors.black),
+              if (item.title == 'Logout')
+                LogoutWidget() // Use LogoutWidget for Logout menu item
+              else
+                ListTile(
+                  leading: Icon(item.icon),
+                  title: Text(
+                    item.title,
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {
+                    Navigator.pushNamed(context, item.routeName);
+                  },
                 ),
-                onTap: () {
-                  Navigator.pushNamed(context, item.routeName);
-                },
-              ),
           ],
         ),
       ),
