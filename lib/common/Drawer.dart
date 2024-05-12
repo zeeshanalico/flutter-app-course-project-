@@ -24,8 +24,7 @@ class LogoutWidget extends StatelessWidget {
         content: Text('Logged out successfully!'),
       ),
     );
-    Navigator.pushNamed(
-        context, '/login'); // Navigate to login screen after logout
+    Navigator.pushNamed(context, '/login');
   }
 
   @override
@@ -85,7 +84,7 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
             for (var item in items)
               if (item.title == 'Logout')
-                LogoutWidget() // Use LogoutWidget for Logout menu item
+                LogoutWidget()
               else
                 ListTile(
                   leading: Icon(item.icon),

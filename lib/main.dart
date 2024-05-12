@@ -4,12 +4,12 @@ import 'Screens/homecreen.dart';
 import 'Screens/available_events_screen.dart';
 import 'Screens/registerscreen.dart';
 import 'Screens/PrivateScreens//dashboard_screen.dart';
+import 'Screens/PrivateScreens/profile.dart';
 // import 'Screens//PrivateScreens/calendar.dart';
 // import 'Screens/PrivateScreens/createEvent.dart';
 // import 'Screens/PrivateScreens/dashboard_screen.dart';
 // import 'Screens/PrivateScreens/help.dart';
 // import 'Screens/PrivateScreens/myevents.dart';
-import 'Screens/PrivateScreens/profile.dart';
 // import 'Screens/PrivateScreens/setting.dart';
 
 void main() {

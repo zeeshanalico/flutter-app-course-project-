@@ -65,7 +65,7 @@ class _EventDetailsState extends State<AvailableEvents> {
         print(e);
       }
     } else {
-      events = []; // Initialize with empty list if no events found
+      events = [];
     }
 
     setState(() {});
@@ -94,7 +94,7 @@ class _EventDetailsState extends State<AvailableEvents> {
         title: const Text(
           'Available Events',
         ),
-        automaticallyImplyLeading: false, // Hide the back button
+        automaticallyImplyLeading: false,
         actions: [
           const SizedBox(width: 20.0),
           IconButton(
