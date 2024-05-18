@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:event_management_system/common/drawer.dart';
-import 'package:event_management_system/utils/dashboardUtils.dart';
 import 'package:event_management_system/Screens/available_events_screen.dart';
 
 class DashboardScreen extends StatefulWidget {

@@ -11,16 +11,17 @@ class AvailableEvents extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AvailableEvents> createState() => _EventDetailsState();
+  State<AvailableEvents> createState() => _AvailableEventsState();
 }
 
-class _EventDetailsState extends State<AvailableEvents> {
+class _AvailableEventsState extends State<AvailableEvents> {
   List<Event> events = [];
   List<Event> filteredEvents = [];
   String _searchText = "";
   String? _selectedDate;
   late SharedPreferences pref;
   late FirestoreHelper firestoreHelper;
+  String? loggedUserEmail;
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _EventDetailsState extends State<AvailableEvents> {
     pref = await SharedPreferences.getInstance();
     firestoreHelper = await FirestoreHelper.getInstance();
     _loadEvents();
+    _loadLoggedUserEmail();
   }
 
   Future<void> _loadEvents() async {
@@ -46,6 +48,12 @@ class _EventDetailsState extends State<AvailableEvents> {
     }
   }
 
+  Future<void> _loadLoggedUserEmail() async {
+    setState(() {
+      loggedUserEmail = pref.getStringList('loggedUser')?[1];
+    });
+  }
+
   void _filterEvents() {
     setState(() {
       filteredEvents = events.where((event) => _matchesFilter(event)).toList();
@@ -58,6 +66,35 @@ class _EventDetailsState extends State<AvailableEvents> {
     bool matchesDate = _selectedDate == null ||
         event.date.toIso8601String().startsWith(_selectedDate!);
     return matchesSearch && matchesDate;
+  }
+
+  Future<void> addEvent(Event event) async {
+    if (loggedUserEmail != null) {
+      try {
+        await firestoreHelper.addEventForUser(loggedUserEmail!, event);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Event added successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        print("Error adding event: $e");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error adding event: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No logged in user. Please log in first.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
@@ -157,25 +194,18 @@ class _EventDetailsState extends State<AvailableEvents> {
     );
   }
 
-  void printEventDetails(filteredEvent) {
-    print(filteredEvent);
-  }
-
   Widget _buildEventList() {
     if (filteredEvents.isEmpty) {
       return const Center(child: Text('No events found'));
     }
     return ListView.builder(
       itemCount: filteredEvents.length,
-      // itemBuilder: (context, index) {
-      //   return _EventListItem(event: filteredEvents[index]);
-      // },
       itemBuilder: (context, index) {
         return _EventListItem(
           event: filteredEvents[index],
           hideHeader: widget.hideHeader,
           onAddEvent: () {
-            printEventDetails(filteredEvents[index]);
+            addEvent(filteredEvents[index]);
           },
         );
       },
@@ -185,7 +215,7 @@ class _EventDetailsState extends State<AvailableEvents> {
 
 class _EventListItem extends StatelessWidget {
   final Event event;
-  final VoidCallback? onAddEvent; // Function to print event details
+  final VoidCallback? onAddEvent; // Function to add event
   final bool hideHeader;
 
   const _EventListItem(

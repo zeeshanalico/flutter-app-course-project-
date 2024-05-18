@@ -9,10 +9,10 @@ import 'Screens/PrivateScreens//dashboard_screen.dart';
 import 'Screens/PrivateScreens/profile.dart';
 import './utils/firestorehelper.dart';
 import 'Screens/PrivateScreens/createEvent.dart';
+import 'Screens/PrivateScreens/myevents.dart';
 // import 'Screens//PrivateScreens/calendar.dart';
-// import 'Screens/PrivateScreens/dashboard_screen.dart';
 // import 'Screens/PrivateScreens/help.dart';
-// import 'Screens/PrivateScreens/myevents.dart';
+// import 'Screens/PrivateScreens/dashboard_screen.dart';
 // import 'Screens/PrivateScreens/setting.dart';
 
 void main() {
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/': (context) => HomeScreen(),
         '/availableevents': (context) => const AvailableEvents(),
         '/eventdetail': (context) => EventDetailScreen(
               event: ModalRoute.of(context)!.settings.arguments as Event,
@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/profile': (context) => ProfileScreen(),
         '/createevent': (context) => CreateEvent(),
+        '/myevents': (context) => MyEvents(),
       },
       initialRoute: '/',
     );

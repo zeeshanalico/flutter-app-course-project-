@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:event_management_system/utils/firestorehelper.dart';
 import './loginscreen.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -10,7 +10,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterUserState extends State<RegisterScreen> {
-  late SharedPreferences pref;
+  late FirestoreHelper firestoreHelper;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -21,36 +21,28 @@ class _RegisterUserState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
-    _initSharedPreferences();
+    _initFireStore();
   }
 
-  Future<void> _initSharedPreferences() async {
-    pref = await SharedPreferences.getInstance();
+  Future<void> _initFireStore() async {
+    firestoreHelper = await FirestoreHelper.getInstance();
   }
 
-  void register(BuildContext context) {
+  Future<void> register(BuildContext context) async {
     String name = nameController.text;
     String email = emailController.text;
     String phone = phoneController.text;
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
-    if (name == '' ||
-        email == '' ||
-        phone == '' ||
-        password == '' ||
-        confirmPassword == '') {
+    if (name.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please fill all the fields!'),
-        ),
-      );
-      return;
-    }
-    // Check if email is already registered
-    if (pref.getStringList(email) != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('User with this email already exists!'),
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -61,6 +53,7 @@ class _RegisterUserState extends State<RegisterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Passwords do not match!'),
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -74,10 +67,8 @@ class _RegisterUserState extends State<RegisterScreen> {
       password: password,
     );
 
-    pref.setStringList(
-      user.email,
-      [user.name, user.email, user.password, user.phone],
-    );
+    String response = await firestoreHelper.registerUser(
+        user.name, user.email, user.password, user.phone);
 
     // Clear text fields
     nameController.clear();
@@ -86,17 +77,22 @@ class _RegisterUserState extends State<RegisterScreen> {
     passwordController.clear();
     confirmPasswordController.clear();
 
-    // Show success message
+    // Show response message
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('User registered successfully!'),
+      SnackBar(
+        content: Text(response),
+        backgroundColor: response == "User Registered successfully!"
+            ? Colors.green
+            : Colors.red,
       ),
     );
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
+    if (response == "User Registered successfully!") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
   }
 
   @override

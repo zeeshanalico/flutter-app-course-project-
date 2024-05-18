@@ -21,7 +21,7 @@ class DashboardUtils {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Phone: ${userData[3]}',
+                  'Phone: ${userData[2]}',
                   style: const TextStyle(fontSize: 16.0),
                 ),
               ],

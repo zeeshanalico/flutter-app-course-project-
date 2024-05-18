@@ -1,68 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _loadEvents(context);
-  }
-
-  Future<void> _loadEvents(BuildContext context) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-
-    List<Map<String, dynamic>> events = [
-      {
-        'id': '1',
-        'title': 'Event 1',
-        'description': 'Description for Event 1',
-        'date': '2022-05-15',
-      },
-      {
-        'id': '2',
-        'title': 'Event 2',
-        'description': 'Description for Event 2',
-        'date': '2022-05-20',
-      },
-      {
-        'id': '3',
-        'title': 'Event 3',
-        'description': 'Description for Event 3',
-        'date': '2022-05-20',
-      },
-      {
-        'id': '4',
-        'title': 'Event 4',
-        'description': 'Description for Event 4',
-        'date': '2022-05-20',
-      },
-      {
-        'id': '5',
-        'title': 'Event 5',
-        'description': 'Description for Event 5',
-        'date': '2022-05-20',
-      },
-    ];
-
-    List<String> eventsJson = events
-        .map((event) => json.encode(event, toEncodable: (e) => e.toString()))
-        .toList();
-
-    await pref.setStringList('events', eventsJson);
-    await pref.setStringList(
-      'zeeshanali@gmail.com',
-      ['Zeeshan Ali', "zeeshanali@gmail.com", "admin", '03021055932'],
-    );
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,14 +19,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 20.0),
             Image.asset(
-              'home_page.jpg',
+              'assets/home_page.jpg', // Ensure the correct path to your image
               height: 300.0,
               width: 200.0,
               fit: BoxFit.fitHeight,
             ),
             const SizedBox(height: 20.0),
             Text(
-              'Browse through a wide range of events happening in your area. From concerts and festivals to conferences and workshops, find the perfect event to suit your interests',
+              'Browse through a wide range of events happening in your area. From concerts and festivals to conferences and workshops, find the perfect event to suit your interests.',
               style: TextStyle(
                 fontSize: 16.0,
                 color: Colors.grey[700],

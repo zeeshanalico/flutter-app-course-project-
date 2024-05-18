@@ -1,6 +1,6 @@
-import 'package:event_management_system/Screens/PrivateScreens/dashboard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:event_management_system/utils/firestorehelper.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,54 +10,62 @@ class LoginScreen extends StatefulWidget {
 class _LoginPageState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  late FirestoreHelper firestoreHelper;
+
+  Future<void> _initialize() async {
+    firestoreHelper = await FirestoreHelper.getInstance();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
 
   void _login(BuildContext context) async {
-    final pref = await SharedPreferences.getInstance();
+    final SharedPreferences pref = await SharedPreferences.getInstance();
 
     String email = emailController.text;
     String password = passwordController.text;
-    List<String> userData = pref.getStringList(email) ?? [];
 
-    if (userData.isEmpty) {
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('User with this email does not exist.'),
+          content: Text('Please enter both email and password.'),
+          backgroundColor: Colors.red,
         ),
       );
       return;
     }
 
-    // Implement secure password comparison (e.g., using a hash)
-    // Replace this with your actual password hashing logic
-    if (password == userData[2]) {
-      pref.setStringList('loggedUser', userData);
+    var userData = await firestoreHelper.loginUser(email, password);
+
+    if (userData != null) {
+      pref.setStringList('loggedUser', [
+        userData['name'],
+        userData['email'],
+        userData['phone'],
+      ]);
+
       if (mounted) {
-        // Check if the widget is still mounted
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Signed in successfully!'),
+            backgroundColor: Colors.green,
           ),
         );
       }
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => DashboardScreen()),
-      // );
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => const DashboardScreen()),
-      // );
+
       Navigator.pushNamed(context, '/dashboard');
     } else {
       if (mounted) {
-        // Check if the widget is still mounted
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Please enter correct password!'),
+            content: Text('Invalid email or password.'),
+            backgroundColor: Colors.red,
           ),
         );
       }
-      return;
     }
 
     emailController.clear();
@@ -67,15 +75,13 @@ class _LoginPageState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          // title: const Text('Login'),
-          ),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Center(
+            const Center(
               child: Text(
                 'Login yourself!',
                 style: TextStyle(
@@ -85,10 +91,8 @@ class _LoginPageState extends State<LoginScreen> {
                 ),
               ),
             ),
-            // const SizedBox(height: 20.0),
             Image.asset(
               'userpic.png',
-              // height: 300.0,
               width: 200.0,
               fit: BoxFit.fitHeight,
             ),

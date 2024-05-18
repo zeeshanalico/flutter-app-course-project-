@@ -1,5 +1,7 @@
+import 'package:event_management_system/common/Drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:event_management_system/utils/firestorehelper.dart';
 
 class CreateEvent extends StatefulWidget {
   @override
@@ -9,28 +11,80 @@ class CreateEvent extends StatefulWidget {
 class _CreateEventState extends State<CreateEvent> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
+  DateTime date = DateTime.now();
+  late FirestoreHelper firestoreHelper;
 
-  String _generateUniqueId() {
-    var uuid = Uuid();
-    return uuid.v4();
+  void initState() {
+    super.initState();
+    _initialize();
   }
 
-  void _createEvent() {
-    String id = _generateUniqueId();
-    String title = _titleController.text;
-    String description = _descriptionController.text;
-    print('ID: $id');
-    print('Title: $title');
-    print('Description: $description');
-    print('Date: $_selectedDate');
+  String _generateUniqueId() {
+    return DateTime.now().millisecondsSinceEpoch.toString();
+  }
+
+  Future<void> _initialize() async {
+    firestoreHelper = await FirestoreHelper.getInstance();
+  }
+
+  Future<void> _createEvent(BuildContext context) async {
+    try {
+      String id = _generateUniqueId();
+      String title = _titleController.text;
+      String description = _descriptionController.text;
+      if (title == '' || description == '') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please fill all the fields!'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+      // Convert the date to UTC to ensure consistency across devices
+      DateTime utcDate = DateTime.utc(
+        date.year,
+        date.month,
+        date.day,
+        date.hour,
+        date.minute,
+        date.second,
+        date.millisecond,
+        date.microsecond,
+      );
+
+      // Wait for the event creation to complete
+      await firestoreHelper.createEvent(
+          title, description, utcDate, int.parse(id));
+
+      // Show success message if event creation is successful
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Event created successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Clear text controllers after successful event creation
+      _titleController.clear();
+      _descriptionController.clear();
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to create event. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: MyDrawer(),
       appBar: AppBar(
-        title: Text('Create Event'),
+        title: const Text('Create Event'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,39 +93,41 @@ class _CreateEventState extends State<CreateEvent> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
+              decoration: const InputDecoration(labelText: 'Description'),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             Row(
               children: [
-                Text('Date: ${_selectedDate.toIso8601String().split('T')[0]}'),
+                Text('Date: ${date.toIso8601String().split('T')[0]}'),
                 IconButton(
-                  icon: Icon(Icons.calendar_today),
+                  icon: const Icon(Icons.calendar_today),
                   onPressed: () async {
                     final DateTime? pickedDate = await showDatePicker(
                       context: context,
-                      initialDate: _selectedDate,
+                      initialDate: date,
                       firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(Duration(days: 365)),
+                      lastDate: DateTime.now().add(const Duration(days: 365)),
                     );
-                    if (pickedDate != null && pickedDate != _selectedDate) {
+                    if (pickedDate != null && pickedDate != date) {
                       setState(() {
-                        _selectedDate = pickedDate;
+                        date = pickedDate;
                       });
                     }
                   },
                 ),
               ],
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: _createEvent,
-              child: Text('Create Event'),
+              onPressed: () {
+                _createEvent(context);
+              },
+              child: const Text('Create Event'),
             ),
           ],
         ),

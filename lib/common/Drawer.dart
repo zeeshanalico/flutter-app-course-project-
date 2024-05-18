@@ -22,6 +22,7 @@ class LogoutWidget extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('Logged out successfully!'),
+        backgroundColor: Colors.green,
       ),
     );
     Navigator.pushNamed(context, '/login');
