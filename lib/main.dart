@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'Screens/loginscreen.dart';
 import 'Screens/homecreen.dart';
 import 'Screens/available_events_screen.dart';
@@ -7,8 +8,8 @@ import 'Screens/event_detail.dart';
 import 'Screens/PrivateScreens//dashboard_screen.dart';
 import 'Screens/PrivateScreens/profile.dart';
 import './utils/firestorehelper.dart';
+import 'Screens/PrivateScreens/createEvent.dart';
 // import 'Screens//PrivateScreens/calendar.dart';
-// import 'Screens/PrivateScreens/createEvent.dart';
 // import 'Screens/PrivateScreens/dashboard_screen.dart';
 // import 'Screens/PrivateScreens/help.dart';
 // import 'Screens/PrivateScreens/myevents.dart';
@@ -20,6 +21,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,8 +35,14 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         '/login': (context) => LoginScreen(),
         '/profile': (context) => ProfileScreen(),
+        '/createevent': (context) => CreateEvent(),
       },
       initialRoute: '/',
     );
   }
 }
+
+
+
+// create Event
+// Add event
