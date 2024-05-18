@@ -164,6 +164,85 @@ class FirestoreHelper {
       print("Error deleting event: $e");
     }
   }
+
+// ----------------------------------
+  Future<void> updateUserDetails(
+      String email, String name, String phone) async {
+    try {
+      var snapshot = await _firestoreInstance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        var docId = snapshot.docs.first.id;
+        await _firestoreInstance.collection("users").doc(docId).update({
+          "name": name,
+          "phone": phone,
+        });
+        print("User details updated successfully!");
+      } else {
+        print("User not found!");
+      }
+    } catch (e) {
+      print("Error updating user details: $e");
+    }
+  }
+
+  Future<void> toggleNotifications(String email, bool enabled) async {
+    try {
+      var snapshot = await _firestoreInstance
+          .collection("users")
+          .where("email", isEqualTo: email)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        var docId = snapshot.docs.first.id;
+        await _firestoreInstance.collection("users").doc(docId).update({
+          "notificationsEnabled": enabled,
+        });
+        print("Notifications setting updated successfully!");
+      } else {
+        print("User not found!");
+      }
+    } catch (e) {
+      print("Error updating notifications setting: $e");
+    }
+  }
+
+  // ------------------------------------------------------------------------------
+  // Future<List<Event>> getAllEvents() async {
+  //   List<Event> listData = [];
+
+  //   try {
+  //     var snapshot = await _firestoreInstance.collection("events").get();
+  //     for (var doc in snapshot.docs) {
+  //       Event event = Event.fromMap(doc.data(), doc.id);
+  //       listData.add(event);
+  //     }
+  //   } catch (e) {
+  //     print("Error getting events: $e");
+  //   }
+
+  //   return listData;
+  // }
+
+  // Future<void> createEvent(
+  //     String title, String description, DateTime date, int id) async {
+  //   try {
+  //     await _firestoreInstance.collection("events").add({
+  //       "id": id,
+  //       "title": title,
+  //       "description": description,
+  //       "date": date.toIso8601String(),
+  //     });
+  //     print("Event created successfully!");
+  //   } catch (e) {
+  //     print("Error creating event: $e");
+  //   }
+  // }
 }
 
 class Event {

@@ -103,6 +103,7 @@ class _AvailableEventsState extends State<AvailableEvents> {
       appBar: !widget.hideHeader
           ? AppBar(
               title: const Text('Available Events'),
+              backgroundColor: Colors.blue,
               automaticallyImplyLeading: false,
               actions: [
                 const SizedBox(width: 20.0),

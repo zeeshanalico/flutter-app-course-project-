@@ -93,6 +93,8 @@ class _MyEventsState extends State<MyEvents> {
       drawer: MyDrawer(),
       appBar: AppBar(
         title: const Text('My Events'),
+        backgroundColor: Colors.blue,
+
         // automaticallyImplyLeading: false,
       ),
       body: userEvents.isNotEmpty

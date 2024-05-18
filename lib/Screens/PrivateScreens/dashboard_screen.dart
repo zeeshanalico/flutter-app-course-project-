@@ -41,14 +41,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
       drawer: MyDrawer(),
       appBar: AppBar(
         title: const Text('Dashboard'),
+        backgroundColor: Colors.blue,
       ),
       body: SafeArea(
         child: userData != null
-            // ? DashboardUtils.buildDashboardContent(userData!)
             ? AvailableEvents(hideHeader: true)
-            : const Center(
-                child: Text('No user logged in'),
-              ),
+            : logged_error(),
+      ),
+    );
+  }
+}
+
+class logged_error extends StatelessWidget {
+  const logged_error({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 80, color: Colors.red),
+          const SizedBox(height: 20),
+          Text(
+            'No user logged in',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.grey[700],
+            ),
+          ),
+        ],
       ),
     );
   }

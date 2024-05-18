@@ -37,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       drawer: MyDrawer(),
       appBar: AppBar(
         title: const Text('Profile'),
+        backgroundColor: Colors.blue,
       ),
       body: SafeArea(
         child: userData != null && userData!.isNotEmpty

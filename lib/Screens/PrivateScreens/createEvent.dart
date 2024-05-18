@@ -85,6 +85,7 @@ class _CreateEventState extends State<CreateEvent> {
       drawer: MyDrawer(),
       appBar: AppBar(
         title: const Text('Create Event'),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
