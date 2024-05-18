@@ -77,7 +77,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   color: Colors.blueAccent,
                 ),
                 child: Text(
-                  'EMS',
+                  'Manage your Events',
                   style: TextStyle(color: Colors.white, fontSize: 24),
                 ),
               ),

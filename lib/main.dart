@@ -3,8 +3,10 @@ import 'Screens/loginscreen.dart';
 import 'Screens/homecreen.dart';
 import 'Screens/available_events_screen.dart';
 import 'Screens/registerscreen.dart';
+import 'Screens/event_detail.dart';
 import 'Screens/PrivateScreens//dashboard_screen.dart';
 import 'Screens/PrivateScreens/profile.dart';
+import './utils/firestorehelper.dart';
 // import 'Screens//PrivateScreens/calendar.dart';
 // import 'Screens/PrivateScreens/createEvent.dart';
 // import 'Screens/PrivateScreens/dashboard_screen.dart';
@@ -24,6 +26,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         '/availableevents': (context) => const AvailableEvents(),
+        '/eventdetail': (context) => EventDetailScreen(
+              event: ModalRoute.of(context)!.settings.arguments as Event,
+            ),
         '/dashboard': (context) => const DashboardScreen(),
         '/register': (context) => const RegisterScreen(),
         '/login': (context) => LoginScreen(),
