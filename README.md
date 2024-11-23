@@ -1,3 +1,3 @@
-# flutter_application_1
-
-A new Flutter project.
+University course project. 
+An event management application with basic CRUD operations.
+flutter+firebase
